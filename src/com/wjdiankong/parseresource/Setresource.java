@@ -118,7 +118,8 @@ public class Setresource {
 		File cfgFile = new File(filename);
 		if (!cfgFile.exists())return;
 		try {
-			FileReader reader = new FileReader(filename);
+			//FileReader reader = new FileReader(filename);
+			InputStreamReader reader= new InputStreamReader(new FileInputStream(filename), "UTF-8"); //ªÚGB2312,GB18030
 			BufferedReader br = new BufferedReader(reader);
 			String str = null;
 			while((str = br.readLine()) != null) {
