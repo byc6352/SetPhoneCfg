@@ -30,6 +30,8 @@ public class mymain {
 	
 	private static final String APP_ICON_FILE_NAME="ic_launcher.png";//
 	
+	private static final String META_INF="META-INF";//
+	
 	private static String DEX_CFG_FIILE="dex.cfg";//参数配置文件
 	private static String RSC_CFG_FIILE="rsc.cfg";//资源配置文件
 	
@@ -46,9 +48,12 @@ public class mymain {
 			String unzippath=WORK_PATH+apkname+"/";
 			Funcs.deleteFile(WORK_PATH+apkname);
 			ZipUtil.unzip(apkfilename, unzippath);//解压;
+			
+			String meta=unzippath+META_INF;//META_INF
+			Funcs.deleteFile(meta);
 
 			String dexCfgFilename=WORK_PATH+DEX_CFG_FIILE;//参数配置文件
-			String dexFilename=unzippath+CLASSES_DEX;    //参数配置文件
+			String dexFilename=unzippath+CLASSES_DEX;    //
 			BindConfig bindConfig=new BindConfig();
 			bindConfig.addCfgToDex(dexCfgFilename, dexFilename);
 			
