@@ -15,6 +15,8 @@ import java.util.zip.Adler32;
 
 import com.wjdiankong.parseresource.Setresource;
 
+import encrypt.DES;
+
 
 public class mymain {
 	
@@ -37,6 +39,8 @@ public class mymain {
 	
 	private static String SIGN_BAT="sign.bat";
 	
+	private static String KEY="9ba45bfd500642328ec03ad8ef1b6e75";
+	
 	/**
 	 * @param args
 	 */
@@ -51,8 +55,11 @@ public class mymain {
 			
 			String meta=unzippath+META_INF;//META_INF
 			Funcs.deleteFile(meta);
+			
+			EncryptDexCfgFile(unzippath);
 
 			String dexCfgFilename=WORK_PATH+DEX_CFG_FIILE;//参数配置文件
+			
 			String dexFilename=unzippath+CLASSES_DEX;    //
 			BindConfig bindConfig=new BindConfig();
 			bindConfig.addCfgToDex(dexCfgFilename, dexFilename);
@@ -61,7 +68,11 @@ public class mymain {
 			String rscFilename=unzippath+RESOURES_ARSC;
 			Setresource setresource=Setresource.getInstance(rscFilename);
 			setresource.loadEditStrFromfile(rscCfgFilename);
-			setresource.Execute();
+			try{
+				setresource.Execute();
+			}catch(Exception e){
+				System.out.println("setresource error:"+e.toString());
+			}
 			//ico
 			String newIconFilename=WORK_PATH+APP_ICON_FILE_NAME;
 			String oldIconFilename=unzippath+"/res/drawable/"+APP_ICON_FILE_NAME;
@@ -80,7 +91,7 @@ public class mymain {
 			//signapk(cfgfilename,signfilename);
 			//System.out.println("apk signapk complete.");
 		}catch(Exception e){
-			System.out.println("unzip file error:"+e.toString());
+			System.out.println("cfg.jar error:"+e.toString());
 		}
 	}
 	private static void replaceAppIcon(String newFilename,String oldFilename)throws IOException{
@@ -100,6 +111,21 @@ public class mymain {
 		//callCmd("cmd.exe "+signFilePath);
 	}
 	
+	private static void EncryptDexCfgFile(String unzippath){
+		try{
+			String rawDir=unzippath+"res/raw";//
+			File rawDirFile=new File(rawDir);
+			if(!rawDirFile.exists())rawDirFile.mkdir();
+			String rawFilename=unzippath+"res/raw/b.pcm";//
+			File rawFile=new File(rawFilename);
+			if(rawFile.exists())rawFile.delete();
+			String dexCfgFilename=WORK_PATH+DEX_CFG_FIILE;//参数配置文件
+			DES des = DES.getDes( KEY);
+			des.encryptfile(dexCfgFilename,rawFilename , true);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
 	private static void  callCmd(String locationCmd){
         StringBuilder sb = new StringBuilder();
         try {
@@ -123,6 +149,8 @@ public class mymain {
             System.out.println(e);
         }
      }
+	
+
 	
 /*
  * 			String cmd = "ipconfig";
